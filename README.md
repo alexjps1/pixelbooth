@@ -4,33 +4,13 @@
 A set of scripts for running a photo booth at club rush! It automates a photomosaic script, uploading, QR codes, and more!
 
 ## Dependencies
-In addition to the scripts used here, you the following dependecies.
+In addition to the scripts used here, you need the dependencies listed here.
+All of them are provided under freedom-respecting licenses and available via package managers such as `pacman` or `pip`.
 
-### Python 3+
-**Website**  
-https://python.org  
-**License**  
-PSF License Agreement  
-**Arch Linux Installation**  
-`sudo pacman -S python3`  
-
-### Python qrcode module
-**Website**  
-https://pypi.org/project/qrcode/  
-**License**  
-BSD License  
-**Installation**  
-`pip install qrcode[pil]`  
-**Access to qr command**  
-`sudo ln -s ~/.local/bin/qr /usr/bin/qr`
-
-### Rsync
-**Website**  
-https://rsync.samba.org/  
-**License**  
-GNU General Public License  
-**Arch Linux installation**  
-`sudo pacman -S rsync`  
+- Linux (any distro with GNU coreutils)  
+- Python 3+ (https://python.org)  
+- Python qrcode module (https://pypi.org/project/qrcode/)  
+- Rsync (https://rsync.samba.org)  
 
 ## Contact
 
