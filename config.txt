@@ -1,6 +1,8 @@
 
 
 
-Line 1 is for $SERVER (URL for remote server)
+
+Line 1 is for $SERVER (username@server for accessing remote server via SSH)
 Line 2 is for $DIRECTORY (where images will be placed on server)
-Line 3 is for $PASSWORD (SSH key for remote server)
+Line 3 is for $LINK (codes are appended to this link for accessing images online)
+Line 4 is for $PASSWORD (login password for accessing remote server via SSH)

@@ -1,11 +1,13 @@
 # Set variables from config file
 SERVER=$(sed -n 1p config.txt)
 DIRECTORY=$(sed -n 2p config.txt)
-PASSWORD=$(sed -n 3p config.txt)
+LINK=$(sed -n 3p config.txt)
+PASSWORD=$(sed -n 4p config.txt)
 
 # Handle variable errors or show definitions
 if [ -z "${SERVER}" ]; then echo "[!] \$SERVER variable error" && VAR_ERROR=true ; else echo "[ ] \$SERVER set to \"${SERVER}\"" ; fi
 if [ -z "${DIRECTORY}" ]; then echo "[!] \$DIRECTORY variable error" && VAR_ERROR=true ; else echo "[ ] \$DIRECTORY set to \"${DIRECTORY}\"" ; fi
+if [ -z "${LINK}" ]; then echo "[!] \$LINK variable error" && VAR_ERROR=true ; else echo "[ ] \$LINK set to \"${LINK}\"" ; fi
 if [ -z "${PASSWORD}" ]; then echo "[!] \$PASSWORD variable error" && VAR_ERROR=true ; else echo "[ ] \$PASSWORD set and omitted" ; fi
 if [ ! -z "${VAR_ERROR}" ]; then echo "[!] Check definitions in config.txt" && exit ; fi
 
@@ -75,11 +77,9 @@ do
         CODE=$(shuf -n 1 -i 1000-9999)
         echo "[ ] Code ${CODE} generated"
 
-        # WARNING: Code from hereon out has not been tested
-        # TODO: Test code from this point forward
-
         # Regen if pic with code already existing
-        wget "${SERVER}/${DIRECTORY}/${CODE}.png" && echo "[!] Code already in use" && continue
+        # TODO: Hide output of wget if possible
+        wget "${LINK}/${CODE}" && echo "[!] Code already in use" && continue
         echo "[ ] Code verified as unique"
         break
     done
@@ -87,8 +87,15 @@ do
     while :
     do
         # Upload to server
-        sshpass -p "${PASSWORD}" rsync -avzP ./pics/output.png root@${SERVER}:${DIRECTORY}/${CODE}.png || echo "[!] Upload failed" && continue
-        echo "[ ] Image uploaded"
+        sshpass -p "${PASSWORD}" rsync -avzP ./pics/output.png ${SERVER}:${DIRECTORY}/${CODE}.png && echo "[ ] Image uploaded" && echo "[ ] Image accessible at ${LINK}/${CODE}" && break
+        echo "[!] Upload failed"
     done
+
+    # TODO: QR code generation
+    # TODO: HTML page generation & display
+    # TODO: DWM integration and desktop switching
+
+    # Clear out pictures directory so it's ready for next time
+    rm pics/*
 
 done
