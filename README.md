@@ -11,6 +11,7 @@ All of them are provided under freedom-respecting licenses and available via pac
 - Python 3+ (https://python.org)  
 - Python qrcode module (https://pypi.org/project/qrcode/)  
 - Rsync (https://rsync.samba.org)  
+- SSH Pass (https://sourceforge.net/projects/sshpass/)
 
 ## Contact
 
