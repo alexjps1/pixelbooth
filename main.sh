@@ -1,3 +1,5 @@
+# TODO: DWM integration and desktop switching
+
 # Set variables from config file
 SERVER=$(sed -n 1p config.txt)
 DIRECTORY=$(sed -n 2p config.txt)
@@ -50,8 +52,8 @@ do
 
     while :
     do
-        # Check for file in pics directory
-        [[ $(ls pics) ]] && echo "[ ] New picture detected" && break
+        # Check for file in workspace directory
+        [[ $(ls workspace) ]] && echo "[ ] New picture detected" && break
         sleep 0.5
     done
 
@@ -60,14 +62,14 @@ do
         # Pixelate image with pixelate.py
         # TODO: fix square size, scale, threshold
         # TODO: make sure there are no files except .info and input file
-        (python3 pixelate.py pics/* pics/output.png 1 1 1) && echo "[ ] Image pixelated" && break
+        (python3 pixelate.py workspace/* workspace/output.png 1 1 1) && echo "[ ] Image pixelated" && break
         echo "[!] Pixelation failed"
-        rm pics/output.png
+        rm workspace/output.png
     done
 
     while :
     do
-        [[ $(ls pics | grep "output.png") ]] && echo "[ ] Output image detected" && break
+        [[ $(ls workspace | grep "output.png") ]] && echo "[ ] Output image detected" && break
         sleep 0.5
     done
 
@@ -79,7 +81,7 @@ do
 
         # Regen if pic with code already existing
         # TODO: Hide output of wget if possible
-        wget "${LINK}/${CODE}" && echo "[!] Code already in use" && continue
+        wget "${LINK}/${CODE}" &> /dev/null && echo "[!] Code already in use" && continue
         echo "[ ] Code verified as unique"
         break
     done
@@ -87,15 +89,19 @@ do
     while :
     do
         # Upload to server
-        sshpass -p "${PASSWORD}" rsync -avzP ./pics/output.png ${SERVER}:${DIRECTORY}/${CODE}.png && echo "[ ] Image uploaded" && echo "[ ] Image accessible at ${LINK}/${CODE}" && break
+        sshpass -p "${PASSWORD}" rsync -avzP ./workspace/output.png ${SERVER}:${DIRECTORY}/${CODE}.png && echo "[ ] Image uploaded" && echo "[ ] Image accessible at ${LINK}/${CODE}" && break
         echo "[!] Upload failed"
     done
 
-    # TODO: QR code generation
-    # TODO: HTML page generation & display
-    # TODO: DWM integration and desktop switching
+    # Generate QR code
+    qr "${LINK}/${CODE}" > workspace/qr.png
 
-    # Clear out pictures directory so it's ready for next time
-    rm pics/*
+    # Generate HTML page & display it
+    sed s\#\(LINKHERE\)\#"${LINK}/${CODE}"\#g template.html > workspace/page.html
+    chromium workspace/page.html
+
+    # Clear out workspace directory so it's ready for next time
+    sleep 5
+    rm workspace/*
 
 done
