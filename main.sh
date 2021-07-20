@@ -5,12 +5,14 @@ SERVER=$(sed -n 1p config.txt)
 DIRECTORY=$(sed -n 2p config.txt)
 LINK=$(sed -n 3p config.txt)
 PASSWORD=$(sed -n 4p config.txt)
+BROWSER=$(sed -n 5p config.txt)
 
 # Handle variable errors or show definitions
 if [ -z "${SERVER}" ]; then echo "[!] \$SERVER variable error" && VAR_ERROR=true ; else echo "[ ] \$SERVER set to \"${SERVER}\"" ; fi
 if [ -z "${DIRECTORY}" ]; then echo "[!] \$DIRECTORY variable error" && VAR_ERROR=true ; else echo "[ ] \$DIRECTORY set to \"${DIRECTORY}\"" ; fi
 if [ -z "${LINK}" ]; then echo "[!] \$LINK variable error" && VAR_ERROR=true ; else echo "[ ] \$LINK set to \"${LINK}\"" ; fi
 if [ -z "${PASSWORD}" ]; then echo "[!] \$PASSWORD variable error" && VAR_ERROR=true ; else echo "[ ] \$PASSWORD set and omitted" ; fi
+if [ -z "${BROWSER}" ]; then echo "[!] \$BROWSER variable error" && VAR_ERROR=true ; else echo "[ ] \$BROWSER set to \"${BROWSER}\"" ; fi
 if [ ! -z "${VAR_ERROR}" ]; then echo "[!] Check definitions in config.txt" && exit ; fi
 
 # Make sure there are some images in 'processed'
@@ -98,7 +100,7 @@ do
 
     # Generate HTML page & display it
     sed s\#\(LINKHERE\)\#"${LINK}/${CODE}"\#g template.html > workspace/page.html
-    chromium workspace/page.html
+    ${BROWSER} workspace/page.html
 
     # Clear out workspace directory so it's ready for next time
     sleep 5
