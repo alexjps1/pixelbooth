@@ -1,0 +1,120 @@
+.whitebox{
+    background-color: white;
+    border-radius: 15px;
+    height: 40vh;
+    width: 60vw;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+
+}
+.whitebox2{
+    background-color: white;
+    border-radius: 15px;
+    height: 30vh;
+    width: 60vw;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    align-content: center;
+    /* padding: 0 30px; */
+
+}
+body{
+    background-color: #222222;
+    /* display: flex; */
+    /* justify-content: center; */
+}
+#myButtons{
+    background-color: rgb(53, 100, 255);
+    width: 60vw;
+    height: 10vh;
+    border-radius: 15px;
+    border: #222222;
+    margin: auto;
+    justify-self: center;
+    margin-top: 20px;
+    font-size: 6vh;
+    color: white;
+
+}
+#myButtons :hover{
+    background-color: rgb(28, 81, 255);
+
+   
+
+}
+#ReturnBtn{
+    background-color: rgb(155, 155, 155);
+    width: 60vw;
+    height: 10vh;
+    border-radius: 15px;
+    border:  #222222;
+    margin: auto;
+    justify-self: center;
+    margin-top: 20px;
+    font-size: 6vh;
+    color: white;
+}
+#ReturnBtn :hover{
+    background-color:  rgb(141, 140, 140);
+
+}
+
+.centering{
+    display: flex;
+    justify-content: center;
+}
+.insideButton{
+    display: flex;
+    /* justify-content: flex-start; */
+    align-content: center;
+    /* padding:0 px; */
+}
+#imageify{
+    width: auto;
+    height:28vh;
+    margin: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+
+
+}
+#iglogo{
+    height: 9vh;
+    width: auto;
+    margin: auto 0;
+    margin-left: 30px;
+}
+#posttext{
+    display: flex;
+    margin: auto;
+}
+#downloadText{
+    /* display: flex; */
+    /* align-content: flex-start; */
+    margin: auto ;
+}
+#download1{
+    font-size: 6vh;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#linklol{
+    font-size: 6vh;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#output{
+    margin:auto;
+    max-height: 36vh;
+    width: auto;
+}
+#titles{
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-size: 8vh;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 20px;
+}
