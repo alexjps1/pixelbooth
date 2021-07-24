@@ -64,9 +64,7 @@ do
     while :
     do
         # Pixelate image with pixelate.py
-        # TODO: fix square size, scale, threshold
-        # TODO: make sure there are no files except .info and input file
-        (python3 pixelate.py workspace/* workspace/output.png 1 1 1) && echo "[ ] Image pixelated" && break
+        (python3 pixelate.py workspace/* workspace/output.png ${PIXELATION}) && echo "[ ] Image pixelated" && break
         echo "[!] Pixelation failed"
         rm workspace/output.png
     done
