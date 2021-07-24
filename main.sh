@@ -7,6 +7,7 @@ LINK=$(sed -n 3p config.txt)
 PASSWORD=$(sed -n 4p config.txt)
 BROWSER=$(sed -n 5p config.txt)
 PIXELATION=$(sed -n 6p config.txt)
+SOCIAL=$(sed -n 7p config.txt)
 
 # Handle variable errors or show definitions
 if [ -z "${SERVER}" ]; then echo "[!] \$SERVER variable error" && VAR_ERROR=true ; else echo "[ ] \$SERVER set to \"${SERVER}\"" ; fi
@@ -15,6 +16,8 @@ if [ -z "${LINK}" ]; then echo "[!] \$LINK variable error" && VAR_ERROR=true ; e
 if [ -z "${PASSWORD}" ]; then echo "[!] \$PASSWORD variable error" && VAR_ERROR=true ; else echo "[ ] \$PASSWORD set and omitted" ; fi
 if [ -z "${BROWSER}" ]; then echo "[!] \$BROWSER variable error" && VAR_ERROR=true ; else echo "[ ] \$BROWSER set to \"${BROWSER}\"" ; fi
 if [ -z "${PIXELATION}" ]; then echo "[!] \$PIXELATION variable error" && VAR_ERROR=true ; else echo "[ ] \$PIXELATION set to \"${PIXELATION}\"" ; fi
+if [ -z "${SOCIAL}" ]; then echo "[!] \$SOCIAL variable error" && VAR_ERROR=true ; else echo "[ ] \$SOCIAL set to \"${SOCIAL}\"" ; fi
+
 if [ ! -z "${VAR_ERROR}" ]; then echo "[!] Check definitions in config.txt" && exit ; fi
 
 # Make sure there are some images in 'processed'
@@ -99,7 +102,11 @@ do
     qr "${LINK}/${CODE}" > workspace/qr.png
 
     # Generate HTML page & display it
-    sed s\#\(LINKHERE\)\#"${LINK}/${CODE}"\#g template.html > workspace/page.html
+    TITLE=$(shuf -n 1 titles.txt)
+    cp webpage/template.html > workspace/page.html
+    sed s\#\(TITLEHERE\)\#"${TITLE}"\#g workspace/page.html > workspace/page.html
+    sed s\#\(LINKHERE\)\#"${LINK}/${CODE}"\#g workspace/page.html > workspace/page.html
+    sed s\#\(SOCIALHERE\)\#"${SOCIAL}"\#g workspace/page.html > workspace/page.html
     ${BROWSER} workspace/page.html
 
     # Clear out workspace directory so it's ready for next time
