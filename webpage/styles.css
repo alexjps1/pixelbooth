@@ -26,6 +26,21 @@ body{
     /* display: flex; */
     /* justify-content: center; */
 }
+.bluebox{
+    background-color: rgb(53, 100, 255);
+    border-radius: 15px;
+    height: 10vh;
+    width: 60vw;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 6vh;
+    color: white;
+    position: relative;
+
+}
 #myButtons{
     background-color: rgb(53, 100, 255);
     width: 60vw;
@@ -39,6 +54,7 @@ body{
     color: white;
 
 }
+
 #myButtons :hover{
     background-color: rgb(28, 81, 255);
 
@@ -61,6 +77,41 @@ body{
     background-color:  rgb(141, 140, 140);
 
 }
+
+label > input[type="checkbox"] {
+    display: none;
+    font-size: small;
+    width: 30px;
+    height: 10px;
+    margin: auto;
+  }
+label > input[type="checkbox"] + *::before {
+    content: "";
+    display: inline-block;
+    vertical-align: bottom;
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 10%;
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgb(255, 255, 255);
+    width: 4vw;
+    height: 4vw;
+    margin: auto;
+    margin-left: 35%;
+  }
+  label > input[type="checkbox"]:checked + *::before {
+    content: "✓";
+    color: rgb(28, 81, 255);
+    text-align: center;
+    background: rgb(255, 255, 255);
+    border-color: rgb(255, 255, 255);
+  }
+  label > input[type="checkbox"]:checked + * {
+    color: teal;
+  }
+
 
 .centering{
     display: flex;
@@ -90,6 +141,9 @@ body{
 #posttext{
     display: flex;
     margin: auto;
+    font-size: 4.5vh;
+    font-family: Arial, Helvetica, sans-serif;
+
 }
 #downloadText{
     /* display: flex; */
