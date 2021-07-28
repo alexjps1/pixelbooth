@@ -1,4 +1,4 @@
-+<!DOCTYPE html>
+<!DOCTYPE html>
 <head>
   <title>Download Picture</title>
   <link rel="stylesheet" href="styles.css">
@@ -17,14 +17,21 @@
 </div>
 </div>
 <div class = "centering">
-<button type="button" id = "myButtons">
+<button type="button" onclick="blueAway()" id = "myButtons" style="display: block;">
   <div class="insideButton">
   <img src="instagram.png"  id = "iglogo" alt="">
   <div id = "posttext">Allow @mchspc to post to Instagram</div>
    
 </div>
 </button>
-</div>
+</div>  
+
+<div class = greyBox id = "confirm" style="display: none;">
+  <div id = "thanks">✓ <strong>Thank you!</strong></div>
+  <br>
+  <div id = "willPost">We'll post your picture later tonight! <br>Change your mind? Click <a onClick="bringBack()"id ="returnLink" style="text-decoration:underline; cursor: pointer">here</a></div>
+
+  </div>
 <!-- <div class="centering bluebox">
   <label>
     <input type="checkbox" name="key" value="value" />
@@ -44,5 +51,18 @@
   </div>
   </button>
   </div>
+<script>
+
+function bringBack() {
+  document.getElementById("confirm").style.display = "none";
+  document.getElementById("myButtons").style.display = "block";
+
+}
+  function blueAway() {
+  document.getElementById("myButtons").style.display = "none";
+  document.getElementById("confirm").style.display = "block";
+
+}
+</script>
 </body>
 </html>

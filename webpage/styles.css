@@ -9,6 +9,21 @@
     align-content: center;
 
 }
+
+.greyBox{
+    background-color: grey;
+    border-radius: 15px;
+    height: 25vh;
+    width: 60vw;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    flex-wrap: wrap ;
+
+}
 .whitebox2{
     background-color: white;
     border-radius: 15px;
@@ -171,4 +186,19 @@ label > input[type="checkbox"] + *::before {
     font-size: 8vh;
     font-family: Arial, Helvetica, sans-serif;
     margin-bottom: 20px;
+}
+#thanks{
+    font-size: 8vh;
+    color: white;
+    padding-top: 3%;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+
+}
+#willPost{
+    font-size: 3vh;
+    color: white;
+    /* margin-top: 2%; */
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
 }
