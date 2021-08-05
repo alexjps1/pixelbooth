@@ -103,10 +103,11 @@ do
 
     # Generate HTML page & display it
     TITLE=$(shuf -n 1 titles.txt)
-    cp webpage/template.html > workspace/page.html
-    sed s\#\(TITLEHERE\)\#"${TITLE}"\#g workspace/page.html > workspace/page.html
-    sed s\#\(LINKHERE\)\#"${LINK}/${CODE}"\#g workspace/page.html > workspace/page.html
-    sed s\#\(SOCIALHERE\)\#"${SOCIAL}"\#g workspace/page.html > workspace/page.html
+    cp webpage/template.html workspace/page.html
+    cp webpage/styles.css workspace/styles.css
+    sed -i s\#\(TITLEHERE\)\#"${TITLE}"\#g workspace/page.html
+    sed -i s\#\(LINKHERE\)\#"${LINK}/${CODE}"\#g workspace/page.html
+    sed -i s\#\(SOCIALHERE\)\#"${SOCIAL}"\#g workspace/page.html
     ${BROWSER} workspace/page.html
 
     # Clear out workspace directory so it's ready for next time
