@@ -54,6 +54,7 @@ done
 # Setup is done, so everything from hereon out will repeat indefinitely
 while :
 do
+    OFFLINE=false
 
     echo "[ ] Waiting for new picture"
 
@@ -78,25 +79,63 @@ do
         sleep 0.5
     done
 
-    while : 
-    do
-        # Gen random code
-        CODE=$(shuf -n 1 -i 1000-9999)
-        echo "[ ] Code ${CODE} generated"
+    # Check for internet
+    if $(wget -O /dev/null "${SERVER}" &> /dev/null)
+    then
+        # Actions with working internet
+        echo "[ ] Internet connection detected"
+        while : 
+        do
+            # Gen random code
+            CODE=$(shuf -n 1 -i 1000-9999)
+            echo "[ ] Code ${CODE} generated"
 
-        # Regen if pic with code already existing
-        # TODO: Hide output of wget if possible
-        wget "${LINK}/${CODE}" &> /dev/null && echo "[!] Code already in use" && continue
-        echo "[ ] Code verified as unique"
-        break
-    done
+            # Regen if pic with code already existing online or in archive
+            wget "${LINK}/${CODE}" &> /dev/null && echo "[!] Code already in use" && continue
+            [[ $(ls archive/images | grep ${CODE}) ]] && echo "[!] Code already in use" && continue
+            echo "[ ] Code verified as unique"
+            break
+        done
 
-    while :
-    do
-        # Upload to server
-        sshpass -p "${PASSWORD}" rsync -avzP ./workspace/output.png ${SERVER}:${DIRECTORY}/${CODE}.png && echo "[ ] Image uploaded" && echo "[ ] Image accessible at ${LINK}/${CODE}" && break
-        echo "[!] Upload failed"
-    done
+        # Rename file to its code
+        mv workspace/output.png workspace/${CODE}.png
+        
+        while :
+        do
+            # Upload to server
+            sshpass -p "${PASSWORD}" rsync -avzP ./workspace/${CODE}.png ${SERVER}:${DIRECTORY}/${CODE}.png && echo "[ ] Image uploaded" && echo "[ ] Made accessible at ${LINK}/${CODE}" && break
+            echo "[!] Upload failed"
+
+            # Note file as not uploaded on fail
+            echo "$(date -R -u)" > archive/not-uploaded/${CODE}.txt
+            OFFLINE=true
+            echo "[ ] Marked ${CODE} as not uploaded"
+            break
+        done
+    else
+        # Actions when working offline
+        echo "[!] Working offline"
+        OFFLINE=true
+        while : 
+        do
+            # Gen random code with extra entropy
+            CODE=$(shuf -n 1 -i 100000-999999)
+            echo "[ ] Extra entropy code ${CODE} generated"
+
+            # Regen if pic with code already existing online or in archive
+            [[ $(ls archive/images | grep ${CODE}) ]] && echo "[!] Code already in use locally" && continue
+            echo "[ ] Code verified as unique locally"
+            break
+        done
+
+        # Rename file to its code
+        mv workspace/output.png workspace/${CODE}.png
+
+        # Note file as not upladed
+        echo "$(date -R -u)" > archive/not-uploaded/${CODE}.txt
+        OFFLINE=true
+        echo "[ ] Marked ${CODE} as not uploaded"
+    fi
 
     # Generate QR code
     qr "${LINK}/${CODE}" > workspace/qr.png
@@ -108,10 +147,20 @@ do
     sed -i s\#\(TITLEHERE\)\#"${TITLE}"\#g workspace/page.html
     sed -i s\#\(LINKHERE\)\#"${LINK}/${CODE}"\#g workspace/page.html
     sed -i s\#\(SOCIALHERE\)\#"${SOCIAL}"\#g workspace/page.html
+    sed -i s\#\(CODEHERE\)\#"${CODE}"\#g workspace/page.html
+    if $OFFLINE
+    then
+        sed -i s\#\(DOWNLOADMSGHERE\)\#"(Working offline, download later)"\#g workspace/page.html
+    else
+        sed -i s\#\(DOWNLOADMSGHERE\)\#""\#g workspace/page.html
+    fi
+
     ${BROWSER} workspace/page.html
 
     # Clear out workspace directory so it's ready for next time
     sleep 5
+    mv workspace/${CODE}.png archive/images
     rm workspace/*
+    echo "[ ] Cleared workspace"
 
 done
