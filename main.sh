@@ -1,5 +1,16 @@
 # TODO: DWM integration and desktop switching
 
+# Interrupt sequence
+trap cleanup INT
+function cleanup() {
+    echo "[!] Script interrupted"
+    rm workspace/*
+    echo "[ ] Cleared workspace"
+    echo "[ ] Goodbye!"
+    echo "TIP: Run manage.sh to copy/move/delete archived data"
+    exit
+}
+
 # Set variables from config file
 SERVER=$(sed -n 1p config.txt)
 DIRECTORY=$(sed -n 2p config.txt)
