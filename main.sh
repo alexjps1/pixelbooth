@@ -4,6 +4,8 @@
 trap cleanup INT
 function cleanup() {
     echo "[!] Script interrupted"
+    pkill ${BROWSER}
+    rm actions/*
     rm workspace/*
     echo "[ ] Cleared workspace"
     echo "[ ] Goodbye!"
@@ -30,6 +32,9 @@ if [ -z "${PIXELATION}" ]; then echo "[!] \$PIXELATION variable error" && VAR_ER
 if [ -z "${SOCIAL}" ]; then echo "[!] \$SOCIAL variable error" && VAR_ERROR=true ; else echo "[ ] \$SOCIAL set to \"${SOCIAL}\"" ; fi
 
 if [ ! -z "${VAR_ERROR}" ]; then echo "[!] Check definitions in config.txt" && exit ; fi
+
+# Make sure there are images to process
+[[ -z $(ls collage-images) ]] && echo "[!] No images in collage-images" && exit
 
 # Make sure there are some images in 'processed'
 while : 
@@ -151,7 +156,7 @@ do
     # Generate QR code
     qr "${LINK}/${CODE}" > workspace/qr.png
 
-    # Generate HTML page & display it
+    # Generate HTML page
     TITLE=$(shuf -n 1 titles.txt)
     cp webpage/template.html workspace/page.html
     cp webpage/styles.css workspace/styles.css
@@ -165,12 +170,26 @@ do
     else
         sed -i s\#\(DOWNLOADMSGHERE\)\#""\#g workspace/page.html
     fi
+    echo "[ ] HTML generated"
 
-    ${BROWSER} workspace/page.html
+    # Create receipt and exit action files
+    touch actions/exit-action.raw
+    echo "$(date -R -u)" > actions/${CODE}-receipt.raw
+
+    # Display page
+    ${BROWSER} workspace/page.html &> /dev/null &
+    echo "[ ] Displaying page"
+
+    # Check whether approve or return button pressed
+    while :
+    do
+        [[ $(ls workspace | grep ${CODE}-receipt.raw) ]] && mv workspace/${CODE}-receipt.raw archive/receipts && echo "[ ] Allow receipt collected for image ${CODE}" 
+        [[ $(ls workspace | grep exit-action.raw) ]] && pkill ${BROWSER} && echo "[ ] Browser closed" && break
+    done
 
     # Clear out workspace directory so it's ready for next time
-    sleep 5
     mv workspace/${CODE}.png archive/images
+    rm actions/*
     rm workspace/*
     echo "[ ] Cleared workspace"
 
