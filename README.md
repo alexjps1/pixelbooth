@@ -16,7 +16,9 @@ Make the shell script executable.
 `chmod +x ./main.sh`  
 Then, edit the `config.txt` file with your favorite text editor, such as `vim`.  
 `vim config.txt`  
-Fill out lines 1-5 with the instructions contained in the file.
+Fill out lines 1-5 with the instructions contained in the file.  
+Then run the main shell script.  
+`./main.sh`
 
 ## Dependencies
 In addition to the scripts used here, you need the dependencies listed here.
@@ -26,6 +28,7 @@ All of them are provided under freedom-respecting licenses and available via pac
 - [Linux](https://archlinux.org)
 - [Python 3+](https://python.org)  
 - [Python qrcode module](https://pypi.org/project/qrcode/)  
+- [Python pillow module](https://pypi.org/project/pillow/)
 - [Rsync](https://rsync.samba.org)  
 - [SSH Pass](https://sourceforge.net/projects/sshpass/)
 

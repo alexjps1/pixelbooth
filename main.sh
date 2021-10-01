@@ -21,6 +21,8 @@ PASSWORD=$(sed -n 4p config.txt)
 BROWSER=$(sed -n 5p config.txt)
 PIXELATION=$(sed -n 6p config.txt)
 SOCIAL=$(sed -n 7p config.txt)
+MODE=$(sed -n 8p config.txt)
+DIMENSIONS=$(sed -n 9p config.txt)
 
 # Handle variable errors or show definitions
 if [ -z "${SERVER}" ]; then echo "[!] \$SERVER variable error" && VAR_ERROR=true ; else echo "[ ] \$SERVER set to \"${SERVER}\"" ; fi
@@ -30,41 +32,55 @@ if [ -z "${PASSWORD}" ]; then echo "[!] \$PASSWORD variable error" && VAR_ERROR=
 if [ -z "${BROWSER}" ]; then echo "[!] \$BROWSER variable error" && VAR_ERROR=true ; else echo "[ ] \$BROWSER set to \"${BROWSER}\"" ; fi
 if [ -z "${PIXELATION}" ]; then echo "[!] \$PIXELATION variable error" && VAR_ERROR=true ; else echo "[ ] \$PIXELATION set to \"${PIXELATION}\"" ; fi
 if [ -z "${SOCIAL}" ]; then echo "[!] \$SOCIAL variable error" && VAR_ERROR=true ; else echo "[ ] \$SOCIAL set to \"${SOCIAL}\"" ; fi
+if [ -z "${MODE}" ]; then echo "[!] \$MODE variable error" && VAR_ERROR=true ; else echo "[ ] \$MODE set to \"${MODE}\"" ; fi
+if [ -z "${DIMENSIONS}" ]; then echo "[!] \$DIMENSIONS variable error" && VAR_ERROR=true ; else echo "[ ] \$DIMENSIONS set to \"${DIMENSIONS}\"" ; fi
 
 if [ ! -z "${VAR_ERROR}" ]; then echo "[!] Check definitions in config.txt" && exit ; fi
 
-# Make sure there are images to process
-[[ -z $(ls collage-images) ]] && echo "[!] No images in collage-images" && exit
+# Prepare based on selected mode
+if [ "$MODE" == "mosaic" ]
+then
+    # Make sure there are images to process
+    [[ -z $(ls collage-images) ]] && echo "[!] No images in collage-images" && exit
 
-# Make sure there are some images in 'processed'
-while : 
-do
-    if [[ $(ls processed) ]] 
-    then
-        echo "[ ] Processed images found"
-        break
-    else
-        echo "[!] No processed images"
-        python3 process.py || echo "[!] Processing images failed" && continue
-        echo "[ ] Images processed"
-    fi
-done
+    # Make sure there are some images in 'processed'
+    while : 
+    do
+        if [[ $(ls processed) ]] 
+        then
+            echo "[ ] Processed images found"
+            break
+        else
+            echo "[!] No processed images"
+            python3 process.py || echo "[!] Processing images failed" && continue
+            echo "[ ] Images processed"
+        fi
+    done
 
-# Make sure processed images are up-to-date with collage
-# 'processed' should not be last modified at a time before 'collage-images'
-# 'processed' should have the same file count as 'collage-images'
-while :
-do
-    if [ $(stat -c %Y collage-images) -gt $(stat -c %Y processed) ] || [ $(ls -1 collage-images | wc -l) -ne $(ls -1 processed | wc -l) ]
-    then
-        echo "[!] Processed images appear out-of-date"
-        python3 process.py || echo "[!] Processing images failed" && continue
-        echo "[ ] Images processed"
-    else
-        echo "[ ] Processed images appear up-to-date"
-        break
-    fi
-done
+    # Make sure processed images are up-to-date with collage
+    # 'processed' should not be last modified at a time before 'collage-images'
+    # 'processed' should have the same file count as 'collage-images'
+    while :
+    do
+        if [ $(stat -c %Y collage-images) -gt $(stat -c %Y processed) ] || [ $(ls -1 collage-images | wc -l) -ne $(ls -1 processed | wc -l) ]
+        then
+            echo "[!] Processed images appear out-of-date"
+            python3 process.py || echo "[!] Processing images failed" && continue
+            echo "[ ] Images processed"
+        else
+            echo "[ ] Processed images appear up-to-date"
+            break
+        fi
+    done
+elif [ "$MODE" == "overlay" ]
+then
+    # Make sure there are images to overlay
+    [[ -z $(ls overlay-images) ]] && echo "[!] No images in overlay-images" && exit
+    echo "[ ] Overlay images found"
+else
+    echo "[!] \$MODE not set to a valid mode"
+    exit
+fi
 
 # Main loop
 # Setup is done, so everything from hereon out will repeat indefinitely
@@ -81,13 +97,29 @@ do
         sleep 0.5
     done
 
-    while :
-    do
-        # Pixelate image with pixelate.py
-        (python3 pixelate.py workspace/* workspace/output.png ${PIXELATION}) && echo "[ ] Image pixelated" && break
-        echo "[!] Pixelation failed"
-        rm workspace/output.png
-    done
+    # Will select what to do based on mode
+    if [ "$MODE" == "mosaic" ]
+    then
+        while :
+        do
+            # Pixelate image with pixelate.py
+            (python3 pixelate.py workspace/* workspace/output.png ${PIXELATION}) && echo "[ ] Image pixelated" && break
+            echo "[!] Pixelation failed"
+            rm workspace/output.png
+        done
+    elif [ "$MODE" == "overlay" ]
+    then
+        while :
+        do
+            # Overlay image with overlay.py
+            (python3 overlay.py workspace/* ${DIMENSIONS}) && echo "[ ] Image overlaid" && break
+            echo "[!] Overlaying failed"
+            rm workspace/output.png
+        done
+    else
+        echo "[!] \$MODE not set to a valid mode"
+        exit
+    fi
 
     while :
     do
@@ -158,6 +190,8 @@ do
 
     # Generate HTML page
     TITLE=$(shuf -n 1 titles.txt)
+    cp webpage/instagram.png workspace/instagram.png
+    cp webpage/camera.png workspace/camera.png
     cp webpage/template.html workspace/page.html
     cp webpage/styles.css workspace/styles.css
     sed -i s\#\(TITLEHERE\)\#"${TITLE}"\#g workspace/page.html

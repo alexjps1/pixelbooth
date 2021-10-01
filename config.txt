@@ -5,6 +5,8 @@
 
 
 
+
+
 Line 1 is for $SERVER (username@server for accessing remote server via SSH)
 Line 2 is for $DIRECTORY (where images will be placed on server)
 Line 3 is for $LINK (codes are appended to this link for accessing images online)
@@ -12,3 +14,5 @@ Line 4 is for $PASSWORD (login password for accessing remote server via SSH)
 Line 5 is for $BROWSER (for viewing generated HTML, QR code, etc)
 Line 6 is for $PIXELATION (3 integer arguments, separated by spaces, for pixelate.py)
 Line 7 is for $SOCIAL (social media page for post consent)
+Line 8 is for $MODE (can be "mosaic" or "overlay")
+Line 9 is for $DIMENSIONS (x and y dimensions for size of overlay output image eseparated by space)
