@@ -38,11 +38,9 @@ However, pictures are uploaded with SSH encryption to a remote server so they ca
 
 ## Contact
 
-Nathan  
-Available on Slack
+Nathan, Harnoor, Anish
+See respective GitHub profiles
 
-Alex  
-[mchspc@alexjps.com](mailto:mchspc@alexjps.com)
-
-PGP Public Key  
+Alex JPS
+[git@alexjps.com](mailto:git@alexjps.com)
 [alexjps.com/pubkey](https://alexjps.com/pubkey)  
